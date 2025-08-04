@@ -6,7 +6,7 @@ export const ROUTES = {
   FORGOT_PASSWORD: "/forgot-password",
   
   // Protected routes
- 
+  ADMIN: "/admin",
 } as const;
 
 export type RouteKeys = keyof typeof ROUTES;
