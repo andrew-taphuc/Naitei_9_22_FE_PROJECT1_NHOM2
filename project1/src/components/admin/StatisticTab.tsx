@@ -18,6 +18,7 @@ import {
 } from 'recharts';
 import StatisticCard from './StatisticCard';
 import dbData from '../../../db.json';
+import MoneyIcon from '@/assets/icons/MoneyIcon';
 
 interface OrderItem {
   id: string;
@@ -154,11 +155,7 @@ export default function StatisticTab() {
           title="Tổng doanh thu"
           value={`${data.totalRevenue.toLocaleString('vi-VN')} VNĐ`}
           color="blue"
-          icon={
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-            </svg>
-          }
+          icon={<MoneyIcon className="w-8 h-8" />}
           trend={{ value: 12.5, isPositive: true }}
         />
         <StatisticCard

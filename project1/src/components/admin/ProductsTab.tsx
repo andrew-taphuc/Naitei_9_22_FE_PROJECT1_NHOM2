@@ -1,9 +1,18 @@
 'use client';
 
 import React from 'react';
+import { ReactNode } from 'react';
 import Image from 'next/image';
 import { IconButton } from '@/components/ui/icon-button';
 import productsData from '../../../db.json';
+import EditIcon from '@/assets/icons/EditIcon';
+import ViewIcon from '@/assets/icons/ViewIcon';
+import DeleteIcon from '@/assets/icons/DeleteIcon';
+
+interface TableCellProps {
+  children: ReactNode;
+  className?: string;
+}
 
 const mockProducts = productsData.products.map((product) => ({
   ...product,
@@ -28,6 +37,36 @@ export default function ProductsTab() {
   const outOfStock = mockProducts.filter(p => p.stock === 0).length;
   const categories = [...new Set(mockProducts.map(p => p.category))].length;
 
+  const TBHeader = ({ children, className = "" }: TableCellProps) => (
+    <td
+      className={`border border-gray-200 px-4 py-3 text-left font-semibold ${className}`}
+    >
+      {children}
+    </td>
+  );
+
+  const TBDetail = ({ children, className = "" }: TableCellProps) => (
+    <td
+      className={`border border-gray-200 px-4 py-3 ${className}`}
+    >
+      {children}
+    </td>
+  );
+
+  // Danh sách option cho trạng thái
+const statusOptions = [
+  { value: "", label: "Tất cả trạng thái" },
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Inactive" },
+];
+
+const stats = [
+  { title: "Tổng sản phẩm", value: totalProducts, color: "purple" },
+  { title: "Còn hàng", value: activeProducts, color: "green" },
+  { title: "Hết hàng", value: outOfStock, color: "yellow" },
+  { title: "Danh mục", value: categories, color: "blue" },
+];
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       {/* Header */}
@@ -42,22 +81,17 @@ export default function ProductsTab() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-          <h3 className="text-lg font-semibold text-purple-900">Tổng sản phẩm</h3>
-          <p className="text-2xl font-bold text-purple-600">{totalProducts}</p>
-        </div>
-        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-          <h3 className="text-lg font-semibold text-green-900">Còn hàng</h3>
-          <p className="text-2xl font-bold text-green-600">{activeProducts}</p>
-        </div>
-        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-          <h3 className="text-lg font-semibold text-yellow-900">Hết hàng</h3>
-          <p className="text-2xl font-bold text-yellow-600">{outOfStock}</p>
-        </div>
-        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <h3 className="text-lg font-semibold text-blue-900">Danh mục</h3>
-          <p className="text-2xl font-bold text-blue-600">{categories}</p>
-        </div>
+        {stats.map(({ title, value, color }) => (
+          <div
+            key={title}
+            className={`bg-${color}-50 p-4 rounded-lg border border-${color}-200`}
+          >
+            <h3 className={`text-lg font-semibold text-${color}-900`}>
+              {title}
+            </h3>
+            <p className={`text-2xl font-bold text-${color}-600`}>{value}</p>
+          </div>
+        ))}
       </div>
 
       {/* Tìm kiếm */}
@@ -74,9 +108,11 @@ export default function ProductsTab() {
           ))}
         </select>
         <select className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="">Tất cả trạng thái</option>
-          <option value="active">Hoạt động</option>
-          <option value="inactive">Không hoạt động</option>
+          {statusOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -85,22 +121,22 @@ export default function ProductsTab() {
         <table className="w-full border-collapse border border-gray-200">
           <thead>
             <tr className="bg-gray-50">
-              <th className="border border-gray-200 px-4 py-3 text-left font-semibold">ID</th>
-              <th className="border border-gray-200 px-4 py-3 text-left font-semibold">Hình ảnh</th>
-              <th className="border border-gray-200 px-4 py-3 text-left font-semibold">Tên sản phẩm</th>
-              <th className="border border-gray-200 px-4 py-3 text-left font-semibold">Danh mục</th>
-              <th className="border border-gray-200 px-4 py-3 text-left font-semibold">Giá</th>
-              <th className="border border-gray-200 px-4 py-3 text-left font-semibold">Tồn kho</th>
-              <th className="border border-gray-200 px-4 py-3 text-left font-semibold">Trạng thái</th>
-              <th className="border border-gray-200 px-4 py-3 text-left font-semibold">Ngày tạo</th>
-              <th className="border border-gray-200 px-4 py-3 text-left font-semibold">Thao tác</th>
+              <TBHeader>ID</TBHeader>
+              <TBHeader>Hình ảnh</TBHeader>
+              <TBHeader>Tên sản phẩm</TBHeader>
+              <TBHeader>Danh mục</TBHeader>
+              <TBHeader>Giá</TBHeader>
+              <TBHeader>Tồn kho</TBHeader>
+              <TBHeader>Trạng thái</TBHeader>
+              <TBHeader>Ngày tạo</TBHeader>
+              <TBHeader>Thao tác</TBHeader>
             </tr>
           </thead>
           <tbody>
             {mockProducts.map((product) => (
               <tr key={product.id} className="hover:bg-gray-50">
-                <td className="border border-gray-200 px-4 py-3">{product.id}</td>
-                <td className="border border-gray-200 px-4 py-3">
+                <td>{product.id}</td>
+                <TBDetail>
                   <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
                       <Image 
                         src={product.images[0]} 
@@ -111,13 +147,13 @@ export default function ProductsTab() {
                       />
                     <span className={`text-gray-500 text-xs ${product.images && product.images[0] ? 'hidden' : 'flex'}`}>IMG</span>
                   </div>
-                </td>
-                <td className="border border-gray-200 px-4 py-3 font-medium">{product.name}</td>
-                <td className="border border-gray-200 px-4 py-3">{product.category}</td>
-                <td className="border border-gray-200 px-4 py-3">
+                </TBDetail>
+                <TBDetail className= "font-medium">{product.name}</TBDetail>
+                <TBDetail>{product.category}</TBDetail>
+                <TBDetail>
                   {product.oldPrice.toLocaleString('vi-VN')} VNĐ
-                </td>
-                <td className="border border-gray-200 px-4 py-3">
+                </TBDetail>
+                <TBDetail>
                   <span className={`px-2 py-1 rounded-full text-xs ${
                     product.stock > 10 
                       ? 'bg-green-100 text-green-800' 
@@ -127,20 +163,18 @@ export default function ProductsTab() {
                   }`}>
                     {product.stock}
                   </span>
-                </td>
-                <td className="border border-gray-200 px-4 py-3">
+                </TBDetail>
+                <TBDetail>
                   <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(product.status)}`}>
                     {getStatusText(product.status)}
                   </span>
-                </td>
-                <td className="border border-gray-200 px-4 py-3">{product.createdAt}</td>
-                <td className="border border-gray-200 px-4 py-3">
+                </TBDetail>
+                <TBDetail>{product.createdAt}</TBDetail>
+                <TBDetail>
                   <div className="flex gap-2">
                     <IconButton
                       icon={
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
+                        <EditIcon className="w-6 h-6" />
                       }
                       onClick={() => console.log('Edit product:', product.id)}
                       tooltip="Sửa sản phẩm"
@@ -150,10 +184,7 @@ export default function ProductsTab() {
                     />
                     <IconButton
                       icon={
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
+                        <ViewIcon className="w-6 h-6" />
                       }
                       onClick={() => console.log('View product:', product.id)}
                       tooltip="Xem chi tiết"
@@ -163,9 +194,7 @@ export default function ProductsTab() {
                     />
                     <IconButton
                       icon={
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
+                        <DeleteIcon className="w-6 h-6" />
                       }
                       onClick={() => console.log('Delete product:', product.id)}
                       tooltip="Xóa sản phẩm"
@@ -174,7 +203,7 @@ export default function ProductsTab() {
                       className="text-red-600 hover:text-red-800 hover:bg-red-50"
                     />
                   </div>
-                </td>
+                </TBDetail>
               </tr>
             ))}
           </tbody>
