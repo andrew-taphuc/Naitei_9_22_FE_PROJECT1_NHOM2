@@ -1,4 +1,5 @@
 import React from 'react';
+import { UpArrowIcon, DownArrowIcon } from '@/assets/icons';
 
 interface StatisticCardProps {
   title: string;
@@ -49,11 +50,7 @@ export default function StatisticCard({ title, value, color, icon, trend }: Stat
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
               >
-                {trend.isPositive ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                )}
+                {trend.isPositive ? <UpArrowIcon /> : <DownArrowIcon />}
               </svg>
             </div>
           )}
