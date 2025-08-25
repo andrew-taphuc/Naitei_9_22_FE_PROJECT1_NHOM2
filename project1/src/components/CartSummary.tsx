@@ -177,6 +177,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart }) => {
           product_id: item.product_id,
           name: item.name,
           price: item.price,
+          oldPrice: item.price,
           quantity: item.quantity,
           discount: item.discount,
           image: item.images[0],
